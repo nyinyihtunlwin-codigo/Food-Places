@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">FoodPlaces</string>
     <string name="action_settings">Settings</string>
+    <string name="title_txt">burpple</string>
+    <string name="hint_search">Search e.g. Japanese in Orchard</string>
+    <string name="featured_txt">FEATURED</string>
+    <string name="promotions_txt">Promotions</string>
+    <string name="see_more_txt">See More</string>
+    <string name="latest_txt">LATEST</string>
+    <string name="burpple_guides_txt">Burpple Guides</string>
+    <string name="news_and_tending_txt"><![CDATA[News & Trending]]></string>
+    <string name="explore_neighbourhood_txt">Explore Neighbourhoods</string>
+    <string name="explore_categories_txt">Explore Categories</string>
 </resources>
