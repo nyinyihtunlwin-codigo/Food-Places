@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.relex.circleindicator.CircleIndicator;
 import projects.nyinyihtunlwin.foodplaces.R;
 import projects.nyinyihtunlwin.foodplaces.adapters.FoodPlacesImagesPagerAdapter;
 import projects.nyinyihtunlwin.foodplaces.adapters.GuidesAdapter;
@@ -40,6 +41,9 @@ public class MainActivity extends BaseActivity {
 
     @BindView(R.id.vp_food_place_images)
     ViewPager vpFoodPlaceImages;
+
+    @BindView(R.id.indicator)
+    CircleIndicator circleIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +96,7 @@ public class MainActivity extends BaseActivity {
 
         FoodPlacesImagesPagerAdapter pagerAdapter = new FoodPlacesImagesPagerAdapter(getApplicationContext());
         vpFoodPlaceImages.setAdapter(pagerAdapter);
+        circleIndicator.setViewPager(vpFoodPlaceImages);
 
     }
 

@@ -28,6 +28,12 @@
                 android:layout_height="match_parent"
                 app:layout_collapseMode="pin">
 
+                <me.relex.circleindicator.CircleIndicator
+                    android:id="@+id/indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_alignParentBottom="true" />
+
                 <TextView
                     android:id="@+id/tv_title"
                     android:layout_width="wrap_content"
