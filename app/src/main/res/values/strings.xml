@@ -11,4 +11,17 @@
     <string name="news_and_tending_txt"><![CDATA[News & Trending]]></string>
     <string name="explore_neighbourhood_txt">Explore Neighbourhoods</string>
     <string name="explore_categories_txt">Explore Categories</string>
+    <string name="dummy_pro_item_name"><![CDATA[Wildfire Chicken & Burgurs]]></string>
+    <string name="kent_ridge_txt">Kent Ridge</string>
+    <string name="msg_generic_no_data">No Data To Display</string>
+    <string name="lbl_refersh">Refresh</string>
+    <string name="burpple_txt">burpple</string>
+    <string name="month_txt">DECEMBER</string>
+    <string name="newly_opene_txt"><u>NEWLY OPENED</u></string>
+    <string name="newly_opened_small_txt">Newly Opened</string>
+    <string name="news_and_trending_item_txt">Sushi Kimura</string>
+    <string name="explore_txt">EXPLORE</string>
+    <string name="bupple_exclusive_txt">BURPPLE EXCLUSIVE</string>
+    <string name="item_name_txt">1-for-1 Shabu Burgur</string>
+    <string name="promotion_date_txt">TILL 31ST JAN \'18</string>
 </resources>
