@@ -30,6 +30,6 @@ public class NewsAndTrendingAdapter extends BaseAdapter<NewsAndTrendingViewHolde
 
     @Override
     public int getItemCount() {
-        return 15;
+        return 2;
     }
 }
