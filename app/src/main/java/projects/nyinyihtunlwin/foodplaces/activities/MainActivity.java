@@ -1,12 +1,15 @@
 package projects.nyinyihtunlwin.foodplaces.activities;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.ToxicBakery.viewpager.transforms.RotateUpTransformer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,17 +31,12 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.rv_burpple_guides)
     SmartRecyclerView rvBurppleGuides;
 
-    @BindView(R.id.rv_news_and_trending)
-    SmartRecyclerView rvNewsAndTrending;
-
     @BindView(R.id.vp_empty_data)
     EmptyViewPod vpEmptyData;
 
     @BindView(R.id.vp_empty_data_guides)
     EmptyViewPod vpEmptyDataGuides;
 
-    @BindView(R.id.vp_empty_data_news_and_trending)
-    EmptyViewPod vpEmptyDataNewsAndTrending;
 
     @BindView(R.id.vp_food_place_images)
     ViewPager vpFoodPlaceImages;
@@ -46,11 +44,30 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.indicator)
     CircleIndicator circleIndicator;
 
+
+    private Handler handler;
+    private int delay = 3000;
+    private int page = 0;
+    private FoodPlacesImagesPagerAdapter pagerAdapter;
+    Runnable runnable = new Runnable() {
+        public void run() {
+            if (pagerAdapter.getCount() == page) {
+                page = 0;
+            } else {
+                page++;
+            }
+            vpFoodPlaceImages.setCurrentItem(page, true);
+            handler.postDelayed(this, delay);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this, this);
+
+        handler = new Handler();
 
 
         rvPromotions.setEmptyView(vpEmptyData);
@@ -59,17 +76,11 @@ public class MainActivity extends BaseActivity {
         rvBurppleGuides.setEmptyView(vpEmptyDataGuides);
         rvBurppleGuides.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        rvNewsAndTrending.setEmptyView(vpEmptyDataNewsAndTrending);
-        rvNewsAndTrending.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-
         PromotionAdapter promotionAdapter = new PromotionAdapter(getApplicationContext());
         rvPromotions.setAdapter(promotionAdapter);
 
         GuidesAdapter guidesAdapter = new GuidesAdapter(getApplicationContext());
         rvBurppleGuides.setAdapter(guidesAdapter);
-
-        NewsAndTrendingAdapter newsAndTrendingAdapter = new NewsAndTrendingAdapter(getApplicationContext());
-        rvNewsAndTrending.setAdapter(newsAndTrendingAdapter);
 
         SmartHorizontalScrollListener scrollListenerPromotion = new SmartHorizontalScrollListener(new SmartHorizontalScrollListener.OnSmartHorizontalScrollListener() {
             @Override
@@ -85,21 +96,25 @@ public class MainActivity extends BaseActivity {
                         .setAction("Action", null).show();
             }
         });
-        SmartHorizontalScrollListener scrollListenerNewsAndTrending = new SmartHorizontalScrollListener(new SmartHorizontalScrollListener.OnSmartHorizontalScrollListener() {
-            @Override
-            public void onListEndReached() {
-                Snackbar.make(rvNewsAndTrending, "No more item available.", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         rvPromotions.addOnScrollListener(scrollListenerPromotion);
         rvBurppleGuides.addOnScrollListener(scrollListenerGuides);
-        rvNewsAndTrending.addOnScrollListener(scrollListenerNewsAndTrending);
 
-        FoodPlacesImagesPagerAdapter pagerAdapter = new FoodPlacesImagesPagerAdapter(getApplicationContext());
+        pagerAdapter = new FoodPlacesImagesPagerAdapter(getApplicationContext());
         vpFoodPlaceImages.setAdapter(pagerAdapter);
         circleIndicator.setViewPager(vpFoodPlaceImages);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handler.postDelayed(runnable, delay);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(runnable);
     }
 
     @Override
