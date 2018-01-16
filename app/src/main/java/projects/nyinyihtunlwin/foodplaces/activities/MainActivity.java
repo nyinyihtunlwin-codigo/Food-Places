@@ -5,11 +5,8 @@ import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.ToxicBakery.viewpager.transforms.RotateUpTransformer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,7 +14,6 @@ import me.relex.circleindicator.CircleIndicator;
 import projects.nyinyihtunlwin.foodplaces.R;
 import projects.nyinyihtunlwin.foodplaces.adapters.FoodPlacesImagesPagerAdapter;
 import projects.nyinyihtunlwin.foodplaces.adapters.GuidesAdapter;
-import projects.nyinyihtunlwin.foodplaces.adapters.NewsAndTrendingAdapter;
 import projects.nyinyihtunlwin.foodplaces.adapters.PromotionAdapter;
 import projects.nyinyihtunlwin.foodplaces.components.EmptyViewPod;
 import projects.nyinyihtunlwin.foodplaces.components.SmartHorizontalScrollListener;
