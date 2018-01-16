@@ -1,10 +1,15 @@
 package projects.nyinyihtunlwin.foodplaces.data.model;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import projects.nyinyihtunlwin.foodplaces.data.vo.FeaturedVO;
 import projects.nyinyihtunlwin.foodplaces.data.vo.GuidesVO;
 import projects.nyinyihtunlwin.foodplaces.data.vo.PromotionVO;
+import projects.nyinyihtunlwin.foodplaces.events.RestApiEvents;
 import projects.nyinyihtunlwin.foodplaces.network.FoodPlacesDataAgentImpl;
 import projects.nyinyihtunlwin.foodplaces.utils.AppConstants;
 
@@ -23,6 +28,10 @@ public class FoodPlacesModel {
     private static FoodPlacesModel sObjInstance;
 
     private FoodPlacesModel() {
+        mPromotionList = new ArrayList<>();
+        mGuidesList = new ArrayList<>();
+        mFeaturedList = new ArrayList<>();
+        EventBus.getDefault().register(this);
     }
 
     public static FoodPlacesModel getObjInstance() {
@@ -44,6 +53,24 @@ public class FoodPlacesModel {
         FoodPlacesDataAgentImpl.getObjInstance().loadFeatured(AppConstants.ACCESS_TOKEN, mPageIndex);
     }
 
+    @Subscribe
+    public void onPromotionsDataLoaded(RestApiEvents.PromotionsDataLoadedEvent promotionsDataLoadedEvent) {
+        mPageIndex = promotionsDataLoadedEvent.getLoadedPageIndex() + 1;
+        mPromotionList.addAll(promotionsDataLoadedEvent.getLoadedPromotions());
+    }
+
+    @Subscribe
+    public void onGuidesDataLoaded(RestApiEvents.GuidesDataLoadedEvent guidesDataLoadedEvent) {
+        mPageIndex = guidesDataLoadedEvent.getLoadedPageIndex() + 1;
+        mGuidesList.addAll(guidesDataLoadedEvent.getLoadedGuides());
+    }
+
+    @Subscribe
+    public void onFeaturedDataLoaded(RestApiEvents.FeaturedDataLoadedEvent featuredDataLoadedEvent) {
+        mPageIndex = featuredDataLoadedEvent.getLoadedPageIndex() + 1;
+        mFeaturedList.addAll(featuredDataLoadedEvent.getLoadedFeatures());
+    }
+
     public List<PromotionVO> getmPromotionList() {
         return mPromotionList;
     }
@@ -55,4 +82,6 @@ public class FoodPlacesModel {
     public List<FeaturedVO> getmFeaturedList() {
         return mFeaturedList;
     }
+
+
 }
