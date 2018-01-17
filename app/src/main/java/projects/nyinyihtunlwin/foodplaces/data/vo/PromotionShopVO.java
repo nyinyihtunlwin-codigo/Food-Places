@@ -1,12 +1,16 @@
 package projects.nyinyihtunlwin.foodplaces.data.vo;
 
+import android.content.ContentValues;
+
 import com.google.gson.annotations.SerializedName;
+
+import projects.nyinyihtunlwin.foodplaces.persistence.FoodPlacesContract;
 
 /**
  * Created by Dell on 1/15/2018.
  */
 
-class PromotionShopVO {
+public class PromotionShopVO {
 
     @SerializedName("burpple-shop-id")
     private String shopId;
@@ -27,5 +31,17 @@ class PromotionShopVO {
 
     public String getShopArea() {
         return shopArea;
+    }
+
+    public ContentValues parseToContentValues(String promotionId) {
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_ID, shopId);
+        contentValues.put(FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_NAME, shopName);
+        contentValues.put(FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_AREA, shopArea);
+        contentValues.put(FoodPlacesContract.PromotionShopsEntry.COLUMN_PROMOTION_ID, promotionId);
+
+        return contentValues;
     }
 }

@@ -1,5 +1,7 @@
 package projects.nyinyihtunlwin.foodplaces.network;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -51,7 +53,7 @@ public class FoodPlacesDataAgentImpl implements FoodPlacesDataAgent {
     }
 
     @Override
-    public void loadPromotions(String accessToken, final int page) {
+    public void loadPromotions(String accessToken, final int page, final Context context) {
         Call<GetPromotionsResponse> loadPromotionsCall = mFoodPlacesAPI.loadPromotions(page, accessToken);
         loadPromotionsCall.enqueue(new FoodPlacesCallBack<GetPromotionsResponse>() {
             @Override
@@ -61,7 +63,7 @@ public class FoodPlacesDataAgentImpl implements FoodPlacesDataAgent {
                 if (getPromotionsResponse != null
                         && getPromotionsResponse.getPromotions().size() > 0) {
                     RestApiEvents.PromotionsDataLoadedEvent promotionsDataLoadedEvent
-                            = new RestApiEvents.PromotionsDataLoadedEvent(getPromotionsResponse.getPage(), getPromotionsResponse.getPromotions());
+                            = new RestApiEvents.PromotionsDataLoadedEvent(getPromotionsResponse.getPage(), getPromotionsResponse.getPromotions(), context);
                     EventBus.getDefault().post(promotionsDataLoadedEvent);
                 }
             }
@@ -69,7 +71,7 @@ public class FoodPlacesDataAgentImpl implements FoodPlacesDataAgent {
     }
 
     @Override
-    public void loadGuides(String accessToken, int page) {
+    public void loadGuides(String accessToken, int page, final Context context) {
         Call<GetGuidesResponse> loadGuidesCall = mFoodPlacesAPI.loadGuides(page, accessToken);
         loadGuidesCall.enqueue(new FoodPlacesCallBack<GetGuidesResponse>() {
             @Override
@@ -79,7 +81,7 @@ public class FoodPlacesDataAgentImpl implements FoodPlacesDataAgent {
                 if (getGuidesResponse != null
                         && getGuidesResponse.getGuides().size() > 0) {
                     RestApiEvents.GuidesDataLoadedEvent guidesDataLoadedEvent
-                            = new RestApiEvents.GuidesDataLoadedEvent(getGuidesResponse.getPage(), getGuidesResponse.getGuides());
+                            = new RestApiEvents.GuidesDataLoadedEvent(getGuidesResponse.getPage(), getGuidesResponse.getGuides(), context);
                     EventBus.getDefault().post(guidesDataLoadedEvent);
                 }
             }
@@ -87,7 +89,7 @@ public class FoodPlacesDataAgentImpl implements FoodPlacesDataAgent {
     }
 
     @Override
-    public void loadFeatured(String accessToken, int page) {
+    public void loadFeatured(String accessToken, int page, final Context context) {
         Call<GetFeaturedResponse> loadFeatureCall = mFoodPlacesAPI.loadFeatures(page, accessToken);
         loadFeatureCall.enqueue(new FoodPlacesCallBack<GetFeaturedResponse>() {
             @Override
@@ -97,7 +99,7 @@ public class FoodPlacesDataAgentImpl implements FoodPlacesDataAgent {
                 if (getFeaturedResponse != null
                         && getFeaturedResponse.getFeaturedVOs().size() > 0) {
                     RestApiEvents.FeaturedDataLoadedEvent featuredDataLoadedEvent
-                            = new RestApiEvents.FeaturedDataLoadedEvent(getFeaturedResponse.getPage(), getFeaturedResponse.getFeaturedVOs());
+                            = new RestApiEvents.FeaturedDataLoadedEvent(getFeaturedResponse.getPage(), getFeaturedResponse.getFeaturedVOs(), context);
                     EventBus.getDefault().post(featuredDataLoadedEvent);
                 }
             }

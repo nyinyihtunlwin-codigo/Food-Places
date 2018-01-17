@@ -1,5 +1,7 @@
 package projects.nyinyihtunlwin.foodplaces.events;
 
+import android.content.Context;
+
 import java.util.List;
 
 import projects.nyinyihtunlwin.foodplaces.data.vo.FeaturedVO;
@@ -28,10 +30,12 @@ public class RestApiEvents {
 
         private int loadedPageIndex;
         private List<PromotionVO> mLoadedPromotions;
+        private Context context;
 
-        public PromotionsDataLoadedEvent(int loadedPageIndex, List<PromotionVO> loadedPromotions) {
+        public PromotionsDataLoadedEvent(int loadedPageIndex, List<PromotionVO> loadedPromotions, Context context) {
             this.loadedPageIndex = loadedPageIndex;
             this.mLoadedPromotions = loadedPromotions;
+            this.context = context;
         }
 
         public int getLoadedPageIndex() {
@@ -41,15 +45,22 @@ public class RestApiEvents {
         public List<PromotionVO> getLoadedPromotions() {
             return mLoadedPromotions;
         }
+
+        public Context getContext() {
+            return context;
+        }
     }
+
     public static class GuidesDataLoadedEvent {
 
         private int loadedPageIndex;
         private List<GuidesVO> mloadedGuides;
+        private Context context;
 
-        public GuidesDataLoadedEvent(int loadedPageIndex, List<GuidesVO> loadedGuides) {
+        public GuidesDataLoadedEvent(int loadedPageIndex, List<GuidesVO> loadedGuides,Context context) {
             this.loadedPageIndex = loadedPageIndex;
             this.mloadedGuides = loadedGuides;
+            this.context=context;
         }
 
         public int getLoadedPageIndex() {
@@ -59,15 +70,22 @@ public class RestApiEvents {
         public List<GuidesVO> getLoadedGuides() {
             return mloadedGuides;
         }
+
+        public Context getContext() {
+            return context;
+        }
     }
+
     public static class FeaturedDataLoadedEvent {
 
         private int loadedPageIndex;
         private List<FeaturedVO> mloadedFeatures;
+        private Context context;
 
-        public FeaturedDataLoadedEvent(int loadedPageIndex, List<FeaturedVO> loadedFeatures) {
+        public FeaturedDataLoadedEvent(int loadedPageIndex, List<FeaturedVO> loadedFeatures,Context context) {
             this.loadedPageIndex = loadedPageIndex;
             this.mloadedFeatures = loadedFeatures;
+            this.context=context;
         }
 
         public int getLoadedPageIndex() {
@@ -76,6 +94,10 @@ public class RestApiEvents {
 
         public List<FeaturedVO> getLoadedFeatures() {
             return mloadedFeatures;
+        }
+
+        public Context getContext() {
+            return context;
         }
     }
 }

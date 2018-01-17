@@ -21,6 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:name=".persistence.FoodPlacesProvider"
+            android:authorities="projects.nyinyihtunlwin.foodplaces"
+            android:exported="false"
+            android:syncable="true" />
     </application>
 
 </manifest>
