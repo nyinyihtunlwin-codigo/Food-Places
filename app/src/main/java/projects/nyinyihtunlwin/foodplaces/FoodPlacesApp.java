@@ -15,8 +15,8 @@ public class FoodPlacesApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        FoodPlacesModel.getObjInstance().startLoadingPromotions();
-        FoodPlacesModel.getObjInstance().startLoadingGuides();
-        FoodPlacesModel.getObjInstance().startLoadingFeatured();
+        FoodPlacesModel.getObjInstance().startLoadingPromotions(getApplicationContext());
+        FoodPlacesModel.getObjInstance().startLoadingGuides(getApplicationContext());
+        FoodPlacesModel.getObjInstance().startLoadingFeatured(getApplicationContext());
     }
 }

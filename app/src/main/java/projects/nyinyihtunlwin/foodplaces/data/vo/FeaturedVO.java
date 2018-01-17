@@ -1,6 +1,10 @@
 package projects.nyinyihtunlwin.foodplaces.data.vo;
 
+import android.content.ContentValues;
+
 import com.google.gson.annotations.SerializedName;
+
+import projects.nyinyihtunlwin.foodplaces.persistence.FoodPlacesContract;
 
 /**
  * Created by Dell on 1/15/2018.
@@ -41,5 +45,17 @@ public class FeaturedVO {
 
     public String getFeaturedTag() {
         return featuredTag;
+    }
+
+    public ContentValues parseToContentValues() {
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(FoodPlacesContract.FeaturedEntry.COLUMN_FEATURED_ID, featuredId);
+        contentValues.put(FoodPlacesContract.FeaturedEntry.COLUMN_FEATURED_IMAGE, featuredImage);
+        contentValues.put(FoodPlacesContract.FeaturedEntry.COLUMN_FEATURED_TITLE, featuredTitle);
+        contentValues.put(FoodPlacesContract.FeaturedEntry.COLUMN_FEATURED_DESC, featuredDesc);
+        contentValues.put(FoodPlacesContract.FeaturedEntry.COLUMN_FEATURED_TAG, featuredTag);
+
+        return contentValues;
     }
 }

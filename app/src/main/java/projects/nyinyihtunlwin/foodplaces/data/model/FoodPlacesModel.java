@@ -64,6 +64,8 @@ public class FoodPlacesModel {
     public void onPromotionsDataLoaded(RestApiEvents.PromotionsDataLoadedEvent event) {
         mPageIndex = event.getLoadedPageIndex() + 1;
         mPromotionList.addAll(event.getLoadedPromotions());
+
+        // Stored in DB
         ContentValues[] promotionsCVs = new ContentValues[event.getLoadedPromotions().size()];
 
         List<ContentValues> promotionShopCVList = new ArrayList<>();
@@ -91,18 +93,38 @@ public class FoodPlacesModel {
                 termsInPromotionCVList.toArray(new ContentValues[0]));
         Log.d(FoodPlacesApp.LOG_TAG, "inserted Terms In Promotions" + insertedTermsInPromotion);
 
+        int insertedRowCount = event.getContext().getContentResolver().bulkInsert(FoodPlacesContract.PromotionsEntry.CONTENT_URI, promotionsCVs);
+        Log.d(FoodPlacesApp.LOG_TAG, "Inserted row in Promotions : " + insertedRowCount);
     }
 
     @Subscribe
-    public void onGuidesDataLoaded(RestApiEvents.GuidesDataLoadedEvent guidesDataLoadedEvent) {
-        mPageIndex = guidesDataLoadedEvent.getLoadedPageIndex() + 1;
-        mGuidesList.addAll(guidesDataLoadedEvent.getLoadedGuides());
+    public void onGuidesDataLoaded(RestApiEvents.GuidesDataLoadedEvent event) {
+        mPageIndex = event.getLoadedPageIndex() + 1;
+        mGuidesList.addAll(event.getLoadedGuides());
+
+        ContentValues[] guideCVs = new ContentValues[event.getLoadedGuides().size()];
+        for (int index = 0; index < guideCVs.length; index++) {
+            GuidesVO guidesVO = event.getLoadedGuides().get(index);
+            guideCVs[index] = guidesVO.parseToContentValues();
+        }
+
+        int insertedRowCount = event.getContext().getContentResolver().bulkInsert(FoodPlacesContract.GuidesEntry.CONTENT_URI, guideCVs);
+        Log.d(FoodPlacesApp.LOG_TAG, "Inserted row in Guides : " + insertedRowCount);
     }
 
     @Subscribe
-    public void onFeaturedDataLoaded(RestApiEvents.FeaturedDataLoadedEvent featuredDataLoadedEvent) {
-        mPageIndex = featuredDataLoadedEvent.getLoadedPageIndex() + 1;
-        mFeaturedList.addAll(featuredDataLoadedEvent.getLoadedFeatures());
+    public void onFeaturedDataLoaded(RestApiEvents.FeaturedDataLoadedEvent event) {
+        mPageIndex = event.getLoadedPageIndex() + 1;
+        mFeaturedList.addAll(event.getLoadedFeatures());
+
+        ContentValues[] featuredCVs = new ContentValues[event.getLoadedFeatures().size()];
+        for (int index = 0; index < featuredCVs.length; index++) {
+            FeaturedVO featuredVO = event.getLoadedFeatures().get(index);
+            featuredCVs[index] = featuredVO.parseToContentValues();
+        }
+
+        int insertedRowCount = event.getContext().getContentResolver().bulkInsert(FoodPlacesContract.FeaturedEntry.CONTENT_URI, featuredCVs);
+        Log.d(FoodPlacesApp.LOG_TAG, "Inserted row in Guides : " + insertedRowCount);
     }
 
     public List<PromotionVO> getmPromotionList() {
