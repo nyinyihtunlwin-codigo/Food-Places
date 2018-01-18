@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import projects.nyinyihtunlwin.foodplaces.R;
+import projects.nyinyihtunlwin.foodplaces.data.vo.FeaturedVO;
 import projects.nyinyihtunlwin.foodplaces.viewitems.FoodPlaceImageSlideViewItem;
 
 /**
@@ -19,17 +20,19 @@ import projects.nyinyihtunlwin.foodplaces.viewitems.FoodPlaceImageSlideViewItem;
 public class FoodPlacesImagesPagerAdapter extends PagerAdapter {
 
     private LayoutInflater layoutInflater;
-    private List<String> mImages;
+    private List<FeaturedVO> mFeaturedList;
+    private Context mContext;
 
     public FoodPlacesImagesPagerAdapter(Context context) {
         super();
+        this.mContext=context;
         layoutInflater = LayoutInflater.from(context);
-        mImages = new ArrayList<>();
+        mFeaturedList = new ArrayList<>();
     }
 
     @Override
     public int getCount() {
-        return 10;
+        return mFeaturedList.size();
     }
 
     @Override
@@ -41,6 +44,9 @@ public class FoodPlacesImagesPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
 
         FoodPlaceImageSlideViewItem view = (FoodPlaceImageSlideViewItem) layoutInflater.inflate(R.layout.view_item_food_place_image_slide, container, false);
+
+        view.setData(mFeaturedList.get(position),mContext);
+
         container.addView(view);  // attach created view to container
 
         return view;
@@ -51,8 +57,8 @@ public class FoodPlacesImagesPagerAdapter extends PagerAdapter {
         container.removeView((View) object);
     }
 
-    public void setImages(List<String> images) {
-        this.mImages = images;
+    public void setFeatures(List<FeaturedVO> mFeaturedList) {
+        this.mFeaturedList = mFeaturedList;
         notifyDataSetChanged();
     }
 }

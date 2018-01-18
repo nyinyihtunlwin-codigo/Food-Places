@@ -3,10 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/iv_image_slide"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/dummy_slide_palceholder" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_image_slide"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/dummy_slide_palceholder" />
+
+        <TextView
+            android:id="@+id/tv_featured_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/margin_xxlarge"
+            android:text="HelloWorld"
+            android:gravity="center"
+            android:typeface="serif"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_heading_2x"
+            android:textStyle="bold" />
+    </RelativeLayout>
 </projects.nyinyihtunlwin.foodplaces.viewitems.FoodPlaceImageSlideViewItem>

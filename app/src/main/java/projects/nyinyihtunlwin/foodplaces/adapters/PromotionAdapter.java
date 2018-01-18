@@ -23,14 +23,4 @@ public class PromotionAdapter extends BaseAdapter<PromotionsViewHolder, Promotio
         View view = mLayoutInflater.inflate(R.layout.view_item_promotions, parent, false);
         return new PromotionsViewHolder(view);
     }
-
-    @Override
-    public void onBindViewHolder(PromotionsViewHolder holder, int position) {
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return 15;
-    }
 }

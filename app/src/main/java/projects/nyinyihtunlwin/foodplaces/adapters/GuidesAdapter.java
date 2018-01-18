@@ -23,13 +23,4 @@ public class GuidesAdapter extends BaseAdapter<BurppleGuidesViewHolder, GuidesVO
         View view = mLayoutInflater.inflate(R.layout.view_item_guides, parent, false);
         return new BurppleGuidesViewHolder(view);
     }
-
-    @Override
-    public void onBindViewHolder(BurppleGuidesViewHolder holder, int position) {
-    }
-
-    @Override
-    public int getItemCount() {
-        return 15;
-    }
 }

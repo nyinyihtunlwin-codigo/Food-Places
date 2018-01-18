@@ -117,7 +117,7 @@ public class MainActivity
 
         pagerAdapter = new FoodPlacesImagesPagerAdapter(getApplicationContext());
         vpFoodPlaceImages.setAdapter(pagerAdapter);
-        circleIndicator.setViewPager(vpFoodPlaceImages);
+
 
         getSupportLoaderManager().initLoader(PROMOTIONS_LOADER_ID, null, this);
         getSupportLoaderManager().initLoader(GUIDES_LOADER_ID, null, this);
@@ -215,6 +215,8 @@ public class MainActivity
                         FeaturedVO featuredVO = FeaturedVO.parseFromCursor(getApplicationContext(), data);
                         featuredList.add(featuredVO);
                     } while (data.moveToNext());
+                    pagerAdapter.setFeatures(featuredList);
+                    circleIndicator.setViewPager(vpFoodPlaceImages);
                 }
                 break;
         }

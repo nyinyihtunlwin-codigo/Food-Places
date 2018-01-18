@@ -4,6 +4,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import projects.nyinyihtunlwin.foodplaces.R;
@@ -27,6 +30,14 @@ public class PromotionsViewHolder extends BaseViewHolder<PromotionVO> {
     @BindView(R.id.iv_promotion_image)
     ImageView ivPromotionImage;
 
+    @BindView(R.id.tv_promotion_shop_name)
+    TextView tvPromotionShopName;
+
+    @BindView(R.id.tv_promotion_shop_area)
+    TextView tvPromotionShopArea;
+
+    PromotionVO mData;
+
 
     public PromotionsViewHolder(View itemView) {
         super(itemView);
@@ -34,9 +45,16 @@ public class PromotionsViewHolder extends BaseViewHolder<PromotionVO> {
     }
 
     @Override
-    public void setData(PromotionVO data) {
-        tvPromotionTitle.setText(data.getPromotionTitle());
-        tvPromotionUntil.setText(data.getPromotionUntil());
+    public void setData(PromotionVO mData) {
+        this.mData = mData;
+        tvPromotionTitle.setText(mData.getPromotionTitle());
+        tvPromotionUntil.setText(mData.getPromotionUntil());
+        RequestOptions requestOptions = new RequestOptions()
+                .placeholder(R.drawable.ic_placeholder)
+                .centerCrop();
+        Glide.with(itemView.getRootView().getContext()).load(mData.getPromotionImage()).apply(requestOptions).into(ivPromotionImage);
+        tvPromotionShopName.setText(mData.getPromotionShop().getShopName());
+        tvPromotionShopArea.setText(mData.getPromotionShop().getShopArea());
     }
 
     @Override
