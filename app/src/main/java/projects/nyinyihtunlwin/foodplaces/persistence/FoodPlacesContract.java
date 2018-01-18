@@ -40,6 +40,7 @@ public class FoodPlacesContract {
         public static final String COLUMN_PROMOTION_TITLE = "promotion_title";
         public static final String COLUMN_PROMOTION_UNTIL = "promotion_until";
         public static final String COLUMN_IS_EXCLUSIVE = "is_exclusive";
+        public static final String COLUMN_SHOP_ID = "shop_id";
 
         public static Uri buildContentUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -62,7 +63,6 @@ public class FoodPlacesContract {
         public static final String COLUMN_SHOP_ID = "shop_id";
         public static final String COLUMN_SHOP_NAME = "shop_name";
         public static final String COLUMN_SHOP_AREA = "shop_area";
-        public static final String COLUMN_PROMOTION_ID = "promotion_id";
 
         public static Uri buildContentUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

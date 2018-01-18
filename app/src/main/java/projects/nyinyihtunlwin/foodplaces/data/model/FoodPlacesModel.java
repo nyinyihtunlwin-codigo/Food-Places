@@ -76,13 +76,13 @@ public class FoodPlacesModel {
             promotionsCVs[index] = promotionVO.parseToContentValues();
 
             PromotionShopVO shopVO = promotionVO.getPromotionShop();
-            promotionShopCVList.add(shopVO.parseToContentValues(promotionVO.getPromotionId()));
+            promotionShopCVList.add(shopVO.parseToContentValues());
 
             for (String promotionTerm : promotionVO.getPromotionTerms()) {
-                ContentValues imagesInNewsCV = new ContentValues();
-                imagesInNewsCV.put(FoodPlacesContract.TermsInPromotionsEntry.COLUMN_PROMOTION_ID, promotionVO.getPromotionId());
-                imagesInNewsCV.put(FoodPlacesContract.TermsInPromotionsEntry.COLUMN_PROMOTION_TERM, promotionTerm);
-                termsInPromotionCVList.add(imagesInNewsCV);
+                ContentValues termsInPromotionCV = new ContentValues();
+                termsInPromotionCV.put(FoodPlacesContract.TermsInPromotionsEntry.COLUMN_PROMOTION_ID, promotionVO.getPromotionId());
+                termsInPromotionCV.put(FoodPlacesContract.TermsInPromotionsEntry.COLUMN_PROMOTION_TERM, promotionTerm);
+                termsInPromotionCVList.add(termsInPromotionCV);
             }
         }
         int insertedPromotionShop = event.getContext().getContentResolver().bulkInsert(FoodPlacesContract.PromotionShopsEntry.CONTENT_URI,
@@ -94,7 +94,7 @@ public class FoodPlacesModel {
         Log.d(FoodPlacesApp.LOG_TAG, "inserted Terms In Promotions" + insertedTermsInPromotion);
 
         int insertedRowCount = event.getContext().getContentResolver().bulkInsert(FoodPlacesContract.PromotionsEntry.CONTENT_URI, promotionsCVs);
-        Log.d(FoodPlacesApp.LOG_TAG, "Inserted row in Promotions : " + insertedRowCount);
+        Log.d(FoodPlacesApp.LOG_TAG, "inserted row in Promotions : " + insertedRowCount);
     }
 
     @Subscribe

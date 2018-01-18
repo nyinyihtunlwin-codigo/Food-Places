@@ -33,14 +33,13 @@ public class PromotionShopVO {
         return shopArea;
     }
 
-    public ContentValues parseToContentValues(String promotionId) {
+    public ContentValues parseToContentValues() {
 
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_ID, shopId);
         contentValues.put(FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_NAME, shopName);
         contentValues.put(FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_AREA, shopArea);
-        contentValues.put(FoodPlacesContract.PromotionShopsEntry.COLUMN_PROMOTION_ID, promotionId);
 
         return contentValues;
     }

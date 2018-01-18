@@ -20,6 +20,7 @@ public class FoodPlacesDBHelper extends SQLiteOpenHelper {
             FoodPlacesContract.PromotionsEntry.COLUMN_PROMOTION_TITLE + " TEXT, " +
             FoodPlacesContract.PromotionsEntry.COLUMN_PROMOTION_UNTIL + " TEXT, " +
             FoodPlacesContract.PromotionsEntry.COLUMN_IS_EXCLUSIVE + " INTEGER DEFAULT 0, " +
+            FoodPlacesContract.PromotionsEntry.COLUMN_SHOP_ID + " VARCHAR(256), " +
             " UNIQUE (" + FoodPlacesContract.PromotionsEntry.COLUMN_PROMOTION_ID + ") ON CONFLICT REPLACE" +
             ");";
 
@@ -28,7 +29,6 @@ public class FoodPlacesDBHelper extends SQLiteOpenHelper {
             FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_ID + " VARCHAR(256), " +
             FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_NAME + " TEXT, " +
             FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_AREA + " TEXT, " +
-            FoodPlacesContract.PromotionShopsEntry.COLUMN_PROMOTION_ID + " VARCHAR(256), " +
             " UNIQUE (" + FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_ID + ") ON CONFLICT REPLACE" +
             ");";
 
@@ -70,9 +70,10 @@ public class FoodPlacesDBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(SQL_CREATE_GUIDES);
         sqLiteDatabase.execSQL(SQL_CREATE_FEATURED);
 
+        sqLiteDatabase.execSQL(SQL_CREATE_PROMOTION_SHOP);
         sqLiteDatabase.execSQL(SQL_CREATE_PROMOTIONS);
         sqLiteDatabase.execSQL(SQL_CREATE_TERMS_IN_PROMOTION);
-        sqLiteDatabase.execSQL(SQL_CREATE_PROMOTION_SHOP);
+
 
     }
 
@@ -82,10 +83,9 @@ public class FoodPlacesDBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FoodPlacesContract.GuidesEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FoodPlacesContract.FeaturedEntry.TABLE_NAME);
 
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FoodPlacesContract.PromotionShopsEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FoodPlacesContract.PromotionsEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FoodPlacesContract.TermsInPromotionsEntry.TABLE_NAME);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FoodPlacesContract.PromotionShopsEntry.TABLE_NAME);
-
 
         onCreate(sqLiteDatabase);
     }

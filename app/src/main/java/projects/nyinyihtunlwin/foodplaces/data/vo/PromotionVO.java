@@ -76,6 +76,8 @@ public class PromotionVO {
         contentValues.put(FoodPlacesContract.PromotionsEntry.COLUMN_PROMOTION_TITLE, promotionTitle);
         contentValues.put(FoodPlacesContract.PromotionsEntry.COLUMN_PROMOTION_UNTIL, promotionUntil);
         contentValues.put(FoodPlacesContract.PromotionsEntry.COLUMN_IS_EXCLUSIVE, exclusive);
+        contentValues.put(FoodPlacesContract.PromotionsEntry.COLUMN_SHOP_ID, promotionShop.getShopId());
+
 
         return contentValues;
     }
