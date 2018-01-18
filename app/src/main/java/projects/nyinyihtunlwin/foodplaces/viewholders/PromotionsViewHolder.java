@@ -9,6 +9,8 @@ import projects.nyinyihtunlwin.foodplaces.data.vo.PromotionVO;
  */
 
 public class PromotionsViewHolder extends BaseViewHolder<PromotionVO> {
+
+
     public PromotionsViewHolder(View itemView) {
         super(itemView);
     }

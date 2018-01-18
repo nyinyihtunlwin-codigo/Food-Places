@@ -1,6 +1,7 @@
 package projects.nyinyihtunlwin.foodplaces.data.vo;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -42,5 +43,15 @@ public class PromotionShopVO {
         contentValues.put(FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_AREA, shopArea);
 
         return contentValues;
+    }
+
+    public static PromotionShopVO parseFromCursor(Cursor cursor) {
+        PromotionShopVO promotionShop = new PromotionShopVO();
+
+        promotionShop.shopId = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_ID));
+        promotionShop.shopName = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_NAME));
+        promotionShop.shopArea = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_AREA));
+
+        return promotionShop;
     }
 }

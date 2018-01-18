@@ -1,6 +1,8 @@
 package projects.nyinyihtunlwin.foodplaces.data.vo;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -50,5 +52,17 @@ public class GuidesVO {
         contentValues.put(FoodPlacesContract.GuidesEntry.COLUMN_GUIDE_DESC, guideDesc);
 
         return contentValues;
+    }
+
+    public static GuidesVO parseFromCursor(Context context, Cursor cursor) {
+
+        GuidesVO guide = new GuidesVO();
+
+        guide.guideId = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.GuidesEntry.COLUMN_GUIDE_ID));
+        guide.guideImage = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.GuidesEntry.COLUMN_GUIDE_IMAGE));
+        guide.guideTitle = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.GuidesEntry.COLUMN_GUIDE_TITLE));
+        guide.guideDesc = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.GuidesEntry.COLUMN_GUIDE_DESC));
+
+        return guide;
     }
 }

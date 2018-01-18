@@ -1,6 +1,8 @@
 package projects.nyinyihtunlwin.foodplaces.data.vo;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -80,5 +82,38 @@ public class PromotionVO {
 
 
         return contentValues;
+    }
+
+    public static PromotionVO parseFromCursor(Context context, Cursor cursor) {
+        PromotionVO promotion = new PromotionVO();
+        promotion.promotionId = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.PromotionsEntry.COLUMN_PROMOTION_ID));
+        promotion.promotionImage = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.PromotionsEntry.COLUMN_PROMOTION_IMAGE));
+        promotion.promotionTitle = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.PromotionsEntry.COLUMN_PROMOTION_TITLE));
+        promotion.promotionUntil = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.PromotionsEntry.COLUMN_PROMOTION_UNTIL));
+        promotion.exclusive = cursor.getInt(cursor.getColumnIndex(FoodPlacesContract.PromotionsEntry.COLUMN_IS_EXCLUSIVE)) > 0;
+        promotion.promotionShop = PromotionShopVO.parseFromCursor(cursor);
+        promotion.promotionTerms = loadTermsInPromotion(context, promotion.promotionId);
+        return promotion;
+    }
+
+    private static List<String> loadTermsInPromotion(Context context, String promotionId) {
+        Cursor termsInPromotionCursor = context.getContentResolver().query(FoodPlacesContract.TermsInPromotionsEntry.CONTENT_URI,
+                null,
+                FoodPlacesContract.TermsInPromotionsEntry.COLUMN_PROMOTION_ID + " = ?", new String[]{promotionId},
+                null);
+
+        if (termsInPromotionCursor != null && termsInPromotionCursor.moveToFirst()) {
+            List<String> termsInPromotion = new ArrayList<>();
+            do {
+                termsInPromotion.add(
+                        termsInPromotionCursor.getString(
+                                termsInPromotionCursor.getColumnIndex(FoodPlacesContract.TermsInPromotionsEntry.COLUMN_PROMOTION_TERM)
+                        )
+                );
+            } while (termsInPromotionCursor.moveToNext());
+            termsInPromotionCursor.close();
+            return termsInPromotion;
+        }
+        return null;
     }
 }

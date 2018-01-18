@@ -1,6 +1,8 @@
 package projects.nyinyihtunlwin.foodplaces.data.vo;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -57,5 +59,19 @@ public class FeaturedVO {
         contentValues.put(FoodPlacesContract.FeaturedEntry.COLUMN_FEATURED_TAG, featuredTag);
 
         return contentValues;
+    }
+
+    public static FeaturedVO parseFromCursor(Context context, Cursor cursor) {
+
+        FeaturedVO featuredVO = new FeaturedVO();
+
+        featuredVO.featuredId = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.FeaturedEntry.COLUMN_FEATURED_ID));
+        featuredVO.featuredImage = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.FeaturedEntry.COLUMN_FEATURED_IMAGE));
+        featuredVO.featuredTitle = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.FeaturedEntry.COLUMN_FEATURED_TITLE));
+        featuredVO.featuredDesc = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.FeaturedEntry.COLUMN_FEATURED_DESC));
+        featuredVO.featuredTag = cursor.getString(cursor.getColumnIndex(FoodPlacesContract.FeaturedEntry.COLUMN_FEATURED_TAG));
+
+        return featuredVO;
+
     }
 }

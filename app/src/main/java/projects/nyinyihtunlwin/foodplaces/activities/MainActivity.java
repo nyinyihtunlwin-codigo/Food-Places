@@ -1,12 +1,19 @@
 package projects.nyinyihtunlwin.foodplaces.activities;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,8 +25,18 @@ import projects.nyinyihtunlwin.foodplaces.adapters.PromotionAdapter;
 import projects.nyinyihtunlwin.foodplaces.components.EmptyViewPod;
 import projects.nyinyihtunlwin.foodplaces.components.SmartHorizontalScrollListener;
 import projects.nyinyihtunlwin.foodplaces.components.SmartRecyclerView;
+import projects.nyinyihtunlwin.foodplaces.data.vo.FeaturedVO;
+import projects.nyinyihtunlwin.foodplaces.data.vo.GuidesVO;
+import projects.nyinyihtunlwin.foodplaces.data.vo.PromotionVO;
+import projects.nyinyihtunlwin.foodplaces.persistence.FoodPlacesContract;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity
+        extends BaseActivity
+        implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int PROMOTIONS_LOADER_ID = 1001;
+    private static final int GUIDES_LOADER_ID = 1002;
+    private static final int FEATURED_LOADER_ID = 1003;
 
     @BindView(R.id.rv_promotions)
     SmartRecyclerView rvPromotions;
@@ -39,6 +56,9 @@ public class MainActivity extends BaseActivity {
 
     @BindView(R.id.indicator)
     CircleIndicator circleIndicator;
+
+    private PromotionAdapter mPromotionAdapter;
+    private GuidesAdapter mGuidesAdapter;
 
 
     private Handler handler;
@@ -72,11 +92,11 @@ public class MainActivity extends BaseActivity {
         rvBurppleGuides.setEmptyView(vpEmptyDataGuides);
         rvBurppleGuides.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        PromotionAdapter promotionAdapter = new PromotionAdapter(getApplicationContext());
-        rvPromotions.setAdapter(promotionAdapter);
+        mPromotionAdapter = new PromotionAdapter(getApplicationContext());
+        rvPromotions.setAdapter(mPromotionAdapter);
 
-        GuidesAdapter guidesAdapter = new GuidesAdapter(getApplicationContext());
-        rvBurppleGuides.setAdapter(guidesAdapter);
+        mGuidesAdapter = new GuidesAdapter(getApplicationContext());
+        rvBurppleGuides.setAdapter(mGuidesAdapter);
 
         SmartHorizontalScrollListener scrollListenerPromotion = new SmartHorizontalScrollListener(new SmartHorizontalScrollListener.OnSmartHorizontalScrollListener() {
             @Override
@@ -99,6 +119,10 @@ public class MainActivity extends BaseActivity {
         vpFoodPlaceImages.setAdapter(pagerAdapter);
         circleIndicator.setViewPager(vpFoodPlaceImages);
 
+        getSupportLoaderManager().initLoader(PROMOTIONS_LOADER_ID, null, this);
+        getSupportLoaderManager().initLoader(GUIDES_LOADER_ID, null, this);
+        getSupportLoaderManager().initLoader(FEATURED_LOADER_ID, null, this);
+
     }
 
     @Override
@@ -115,23 +139,89 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        CursorLoader cursorLoader = null;
+        switch (id) {
+            case PROMOTIONS_LOADER_ID:
+                cursorLoader = new CursorLoader(getApplicationContext(),
+                        FoodPlacesContract.PromotionsEntry.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null);
+                break;
+            case GUIDES_LOADER_ID:
+                cursorLoader = new CursorLoader(getApplicationContext(),
+                        FoodPlacesContract.GuidesEntry.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null);
+                break;
+            case FEATURED_LOADER_ID:
+                cursorLoader = new CursorLoader(getApplicationContext(),
+                        FoodPlacesContract.FeaturedEntry.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null);
+                break;
+        }
+        return cursorLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        switch (loader.getId()) {
+            case PROMOTIONS_LOADER_ID:
+                if (data != null && data.moveToFirst()) {
+                    List<PromotionVO> promotionList = new ArrayList<>();
+                    do {
+                        PromotionVO promotionVO = PromotionVO.parseFromCursor(getApplicationContext(), data);
+                        promotionList.add(promotionVO);
+                    } while (data.moveToNext());
+                    mPromotionAdapter.appendNewData(promotionList);
+                }
+                break;
+            case GUIDES_LOADER_ID:
+                if (data != null && data.moveToFirst()) {
+                    List<GuidesVO> guideList = new ArrayList<>();
+                    do {
+                        GuidesVO guidesVO = GuidesVO.parseFromCursor(getApplicationContext(), data);
+                        guideList.add(guidesVO);
+                    } while (data.moveToNext());
+                    mGuidesAdapter.appendNewData(guideList);
+                }
+                break;
+            case FEATURED_LOADER_ID:
+                if (data != null && data.moveToFirst()) {
+                    List<FeaturedVO> featuredList = new ArrayList<>();
+                    do {
+                        FeaturedVO featuredVO = FeaturedVO.parseFromCursor(getApplicationContext(), data);
+                        featuredList.add(featuredVO);
+                    } while (data.moveToNext());
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }

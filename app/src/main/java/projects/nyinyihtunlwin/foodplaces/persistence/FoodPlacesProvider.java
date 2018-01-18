@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +25,18 @@ public class FoodPlacesProvider extends ContentProvider {
     public static final int PROMOTION_SHOP = 500;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
+    private static final SQLiteQueryBuilder sPromotionsWithShop_IJ;
+
+    static {
+        sPromotionsWithShop_IJ = new SQLiteQueryBuilder();
+        sPromotionsWithShop_IJ.setTables(
+                FoodPlacesContract.PromotionsEntry.TABLE_NAME + " INNER JOIN " +
+                        FoodPlacesContract.PromotionShopsEntry.TABLE_NAME +
+                        " ON " +
+                        FoodPlacesContract.PromotionsEntry.TABLE_NAME + "." + FoodPlacesContract.PromotionsEntry.COLUMN_SHOP_ID + " = " +
+                        FoodPlacesContract.PromotionShopsEntry.TABLE_NAME + "." + FoodPlacesContract.PromotionShopsEntry.COLUMN_SHOP_ID
+        );
+    }
 
     private FoodPlacesDBHelper mDBHelper;
 
@@ -81,8 +94,31 @@ public class FoodPlacesProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String s, @Nullable String[] strings1, @Nullable String s1) {
-        return null;
+    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+        Cursor queryCursor;
+        switch (sUriMatcher.match(uri)) {
+            case PROMOTIONS:
+                queryCursor = sPromotionsWithShop_IJ.query(mDBHelper.getReadableDatabase(),
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            default:
+                queryCursor = mDBHelper.getReadableDatabase().query(getTableName(uri),
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+        }
+        if (getContext() != null) {
+            queryCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        }
+        return queryCursor;
     }
 
     @Nullable
