@@ -1,5 +1,6 @@
 package projects.nyinyihtunlwin.foodplaces.activities;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,14 +27,17 @@ import projects.nyinyihtunlwin.foodplaces.adapters.PromotionAdapter;
 import projects.nyinyihtunlwin.foodplaces.components.EmptyViewPod;
 import projects.nyinyihtunlwin.foodplaces.components.SmartHorizontalScrollListener;
 import projects.nyinyihtunlwin.foodplaces.components.SmartRecyclerView;
+import projects.nyinyihtunlwin.foodplaces.data.model.FoodPlacesModel;
 import projects.nyinyihtunlwin.foodplaces.data.vo.FeaturedVO;
 import projects.nyinyihtunlwin.foodplaces.data.vo.GuidesVO;
 import projects.nyinyihtunlwin.foodplaces.data.vo.PromotionVO;
+import projects.nyinyihtunlwin.foodplaces.mvp.presenters.FoodPlacesPresenter;
+import projects.nyinyihtunlwin.foodplaces.mvp.views.FoodPlacesView;
 import projects.nyinyihtunlwin.foodplaces.persistence.FoodPlacesContract;
 
 public class MainActivity
         extends BaseActivity
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>, FoodPlacesView {
 
     private static final int PROMOTIONS_LOADER_ID = 1001;
     private static final int GUIDES_LOADER_ID = 1002;
@@ -57,8 +62,13 @@ public class MainActivity
     @BindView(R.id.indicator)
     CircleIndicator circleIndicator;
 
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
+
     private PromotionAdapter mPromotionAdapter;
     private GuidesAdapter mGuidesAdapter;
+
+    private FoodPlacesPresenter mPresenter;
 
 
     private Handler handler;
@@ -85,6 +95,7 @@ public class MainActivity
 
         handler = new Handler();
 
+        mPresenter = new FoodPlacesPresenter();
 
         rvPromotions.setEmptyView(vpEmptyData);
         rvPromotions.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -101,15 +112,13 @@ public class MainActivity
         SmartHorizontalScrollListener scrollListenerPromotion = new SmartHorizontalScrollListener(new SmartHorizontalScrollListener.OnSmartHorizontalScrollListener() {
             @Override
             public void onListEndReached() {
-                Snackbar.make(rvPromotions, "No more promotions available.", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                FoodPlacesModel.getObjInstance().loadMorePromotions(getApplicationContext());
             }
         });
         SmartHorizontalScrollListener scrollListenerGuides = new SmartHorizontalScrollListener(new SmartHorizontalScrollListener.OnSmartHorizontalScrollListener() {
             @Override
             public void onListEndReached() {
-                Snackbar.make(rvBurppleGuides, "No more guides available.", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                FoodPlacesModel.getObjInstance().loadMoreGuides(getApplicationContext());
             }
         });
         rvPromotions.addOnScrollListener(scrollListenerPromotion);
@@ -122,6 +131,14 @@ public class MainActivity
         getSupportLoaderManager().initLoader(PROMOTIONS_LOADER_ID, null, this);
         getSupportLoaderManager().initLoader(GUIDES_LOADER_ID, null, this);
         getSupportLoaderManager().initLoader(FEATURED_LOADER_ID, null, this);
+
+        swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                FoodPlacesModel.getObjInstance().forceRefreshData(getApplicationContext());
+            }
+        });
 
     }
 
@@ -220,10 +237,36 @@ public class MainActivity
                 }
                 break;
         }
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void displayPromotions(List<PromotionVO> promotionList) {
+
+    }
+
+    @Override
+    public void displayGuides(List<GuidesVO> guideList) {
+
+    }
+
+    @Override
+    public void displayFeatured(List<FeaturedVO> featuredList) {
+
+    }
+
+    @Override
+    public void showLoading() {
+        swipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public Context getContext() {
+        return getApplicationContext();
     }
 }

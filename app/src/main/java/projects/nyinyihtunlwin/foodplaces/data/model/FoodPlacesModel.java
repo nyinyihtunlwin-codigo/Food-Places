@@ -140,4 +140,21 @@ public class FoodPlacesModel {
     }
 
 
+    public void loadMorePromotions(Context context) {
+        FoodPlacesDataAgentImpl.getObjInstance().loadPromotions(AppConstants.ACCESS_TOKEN, mPageIndex, context);
+    }
+
+    public void loadMoreGuides(Context context) {
+        FoodPlacesDataAgentImpl.getObjInstance().loadGuides(AppConstants.ACCESS_TOKEN, mPageIndex, context);
+    }
+
+    public void forceRefreshData(Context context) {
+        mPromotionList = new ArrayList<>();
+        mGuidesList = new ArrayList<>();
+        mFeaturedList = new ArrayList<>();
+        mPageIndex = 1;
+        startLoadingFeatured(context);
+        startLoadingPromotions(context);
+        startLoadingGuides(context);
+    }
 }
