@@ -10,15 +10,19 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import projects.nyinyihtunlwin.foodplaces.FoodPlacesApp;
 import projects.nyinyihtunlwin.foodplaces.data.vo.FeaturedVO;
 import projects.nyinyihtunlwin.foodplaces.data.vo.GuidesVO;
 import projects.nyinyihtunlwin.foodplaces.data.vo.PromotionShopVO;
 import projects.nyinyihtunlwin.foodplaces.data.vo.PromotionVO;
 import projects.nyinyihtunlwin.foodplaces.events.RestApiEvents;
+import projects.nyinyihtunlwin.foodplaces.network.FoodPlacesDataAgent;
 import projects.nyinyihtunlwin.foodplaces.network.FoodPlacesDataAgentImpl;
 import projects.nyinyihtunlwin.foodplaces.persistence.FoodPlacesContract;
 import projects.nyinyihtunlwin.foodplaces.utils.AppConstants;
+import projects.nyinyihtunlwin.foodplaces.utils.ConfigUtils;
 
 /**
  * Created by Dell on 1/15/2018.
@@ -30,39 +34,39 @@ public class FoodPlacesModel {
     private List<GuidesVO> mGuidesList;
     private List<FeaturedVO> mFeaturedList;
 
-    private int mPageIndex = 1;
+    @Inject
+    FoodPlacesDataAgent mDataAgent;
 
-    private static FoodPlacesModel sObjInstance;
+    @Inject
+    ConfigUtils mConfigUtils;
 
-    private FoodPlacesModel() {
+
+    public FoodPlacesModel(Context context) {
         mPromotionList = new ArrayList<>();
         mGuidesList = new ArrayList<>();
         mFeaturedList = new ArrayList<>();
         EventBus.getDefault().register(this);
-    }
 
-    public static FoodPlacesModel getObjInstance() {
-        if (sObjInstance == null) {
-            sObjInstance = new FoodPlacesModel();
-        }
-        return sObjInstance;
+        FoodPlacesApp foodPlacesApp = (FoodPlacesApp) context.getApplicationContext();
+        foodPlacesApp.getAppComponent().inject(this);
+
     }
 
     public void startLoadingPromotions(Context context) {
-        FoodPlacesDataAgentImpl.getObjInstance().loadPromotions(AppConstants.ACCESS_TOKEN, mPageIndex, context);
+        mDataAgent.loadPromotions(AppConstants.ACCESS_TOKEN, mConfigUtils.loadPageIndex(), context);
     }
 
     public void startLoadingGuides(Context context) {
-        FoodPlacesDataAgentImpl.getObjInstance().loadGuides(AppConstants.ACCESS_TOKEN, mPageIndex, context);
+        mDataAgent.loadGuides(AppConstants.ACCESS_TOKEN, mConfigUtils.loadPageIndex(), context);
     }
 
     public void startLoadingFeatured(Context context) {
-        FoodPlacesDataAgentImpl.getObjInstance().loadFeatured(AppConstants.ACCESS_TOKEN, mPageIndex, context);
+        mDataAgent.loadFeatured(AppConstants.ACCESS_TOKEN, mConfigUtils.loadPageIndex(), context);
     }
 
     @Subscribe
     public void onPromotionsDataLoaded(RestApiEvents.PromotionsDataLoadedEvent event) {
-        mPageIndex = event.getLoadedPageIndex() + 1;
+        mConfigUtils.savePageIndex(event.getLoadedPageIndex()+1);
         mPromotionList.addAll(event.getLoadedPromotions());
 
         // Stored in DB
@@ -99,7 +103,7 @@ public class FoodPlacesModel {
 
     @Subscribe
     public void onGuidesDataLoaded(RestApiEvents.GuidesDataLoadedEvent event) {
-        mPageIndex = event.getLoadedPageIndex() + 1;
+        mConfigUtils.savePageIndex(event.getLoadedPageIndex()+1);
         mGuidesList.addAll(event.getLoadedGuides());
 
         ContentValues[] guideCVs = new ContentValues[event.getLoadedGuides().size()];
@@ -114,7 +118,7 @@ public class FoodPlacesModel {
 
     @Subscribe
     public void onFeaturedDataLoaded(RestApiEvents.FeaturedDataLoadedEvent event) {
-        mPageIndex = event.getLoadedPageIndex() + 1;
+        mConfigUtils.savePageIndex(event.getLoadedPageIndex()+1);
         mFeaturedList.addAll(event.getLoadedFeatures());
 
         ContentValues[] featuredCVs = new ContentValues[event.getLoadedFeatures().size()];
@@ -141,18 +145,18 @@ public class FoodPlacesModel {
 
 
     public void loadMorePromotions(Context context) {
-        FoodPlacesDataAgentImpl.getObjInstance().loadPromotions(AppConstants.ACCESS_TOKEN, mPageIndex, context);
+        mDataAgent.loadPromotions(AppConstants.ACCESS_TOKEN, mConfigUtils.loadPageIndex(), context);
     }
 
     public void loadMoreGuides(Context context) {
-        FoodPlacesDataAgentImpl.getObjInstance().loadGuides(AppConstants.ACCESS_TOKEN, mPageIndex, context);
+        mDataAgent.loadGuides(AppConstants.ACCESS_TOKEN, mConfigUtils.loadPageIndex(), context);
     }
 
     public void forceRefreshData(Context context) {
         mPromotionList = new ArrayList<>();
         mGuidesList = new ArrayList<>();
         mFeaturedList = new ArrayList<>();
-        mPageIndex = 1;
+        mConfigUtils.savePageIndex(1);
         startLoadingFeatured(context);
         startLoadingPromotions(context);
         startLoadingGuides(context);

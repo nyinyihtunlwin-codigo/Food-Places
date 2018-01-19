@@ -6,6 +6,9 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import projects.nyinyihtunlwin.foodplaces.FoodPlacesApp;
 import projects.nyinyihtunlwin.foodplaces.data.model.FoodPlacesModel;
 import projects.nyinyihtunlwin.foodplaces.data.vo.FeaturedVO;
 import projects.nyinyihtunlwin.foodplaces.data.vo.GuidesVO;
@@ -19,19 +22,24 @@ import projects.nyinyihtunlwin.foodplaces.mvp.views.FoodPlacesView;
 public class FoodPlacesPresenter extends BasePresenter<FoodPlacesView> {
 
 
+    @Inject
+    FoodPlacesModel mFoodPlacesModel;
+
     public FoodPlacesPresenter() {
     }
 
     @Override
     public void onCreate(FoodPlacesView mView) {
         super.onCreate(mView);
+        FoodPlacesApp foodPlacesApp=(FoodPlacesApp)mView.getContext();
+        foodPlacesApp.getAppComponent().inject(this);
     }
 
     @Override
     public void onStart() {
-        List<PromotionVO> promotionList = FoodPlacesModel.getObjInstance().getmPromotionList();
-        List<GuidesVO> guidesList = FoodPlacesModel.getObjInstance().getmGuidesList();
-        List<FeaturedVO> featuredList = FoodPlacesModel.getObjInstance().getmFeaturedList();
+        List<PromotionVO> promotionList = mFoodPlacesModel.getmPromotionList();
+        List<GuidesVO> guidesList = mFoodPlacesModel.getmGuidesList();
+        List<FeaturedVO> featuredList = mFoodPlacesModel.getmFeaturedList();
         if (!promotionList.isEmpty()) {
             mView.displayPromotions(promotionList);
         } else {
@@ -84,15 +92,15 @@ public class FoodPlacesPresenter extends BasePresenter<FoodPlacesView> {
     }
 
     public void onPromotionListEndReach(Context context) {
-        FoodPlacesModel.getObjInstance().loadMorePromotions(context);
+        mFoodPlacesModel.loadMorePromotions(context);
     }
 
     public void onGuidesListEndReach(Context context) {
-        FoodPlacesModel.getObjInstance().loadMoreGuides(context);
+        mFoodPlacesModel.loadMoreGuides(context);
     }
 
     public void onForceRefreshData(Context context) {
-        FoodPlacesModel.getObjInstance().forceRefreshData(context);
+        mFoodPlacesModel.forceRefreshData(context);
     }
 
     @Override

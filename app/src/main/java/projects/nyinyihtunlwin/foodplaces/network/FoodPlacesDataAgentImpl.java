@@ -24,11 +24,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FoodPlacesDataAgentImpl implements FoodPlacesDataAgent {
 
-    private static FoodPlacesDataAgentImpl sObjInstance;
-
     private FoodPlacesAPI mFoodPlacesAPI;
 
-    private FoodPlacesDataAgentImpl() {
+    public FoodPlacesDataAgentImpl() {
         OkHttpClient okHttpClient = new OkHttpClient
                 .Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
@@ -43,13 +41,6 @@ public class FoodPlacesDataAgentImpl implements FoodPlacesDataAgent {
                 .build();
 
         mFoodPlacesAPI = retrofit.create(FoodPlacesAPI.class);
-    }
-
-    public static FoodPlacesDataAgentImpl getObjInstance() {
-        if (sObjInstance == null) {
-            sObjInstance = new FoodPlacesDataAgentImpl();
-        }
-        return sObjInstance;
     }
 
     @Override

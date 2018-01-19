@@ -15,9 +15,12 @@ import android.view.MenuItem;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.relex.circleindicator.CircleIndicator;
+import projects.nyinyihtunlwin.foodplaces.FoodPlacesApp;
 import projects.nyinyihtunlwin.foodplaces.R;
 import projects.nyinyihtunlwin.foodplaces.adapters.FoodPlacesImagesPagerAdapter;
 import projects.nyinyihtunlwin.foodplaces.adapters.GuidesAdapter;
@@ -65,7 +68,8 @@ public class MainActivity
     private PromotionAdapter mPromotionAdapter;
     private GuidesAdapter mGuidesAdapter;
 
-    private FoodPlacesPresenter mPresenter;
+    @Inject
+    FoodPlacesPresenter mPresenter;
 
 
     private Handler handler;
@@ -92,7 +96,9 @@ public class MainActivity
 
         handler = new Handler();
 
-        mPresenter = new FoodPlacesPresenter();
+        FoodPlacesApp foodPlacesApp = (FoodPlacesApp) getApplicationContext();
+        foodPlacesApp.getAppComponent().inject(this);
+
         mPresenter.onCreate(this);
 
         rvPromotions.setEmptyView(vpEmptyData);

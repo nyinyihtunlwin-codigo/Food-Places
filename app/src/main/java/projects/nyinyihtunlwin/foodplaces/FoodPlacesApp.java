@@ -2,6 +2,8 @@ package projects.nyinyihtunlwin.foodplaces;
 
 import android.app.Application;
 
+import javax.inject.Inject;
+
 import projects.nyinyihtunlwin.foodplaces.dagger.AppComponent;
 import projects.nyinyihtunlwin.foodplaces.dagger.AppModule;
 import projects.nyinyihtunlwin.foodplaces.dagger.DaggerAppComponent;
@@ -17,6 +19,9 @@ public class FoodPlacesApp extends Application {
 
     private AppComponent mAppComponent;
 
+    @Inject
+    FoodPlacesModel mFoodPlacesModel;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -24,9 +29,9 @@ public class FoodPlacesApp extends Application {
         mAppComponent = initDagger();
         mAppComponent.inject(this);
 
-        FoodPlacesModel.getObjInstance().startLoadingPromotions(getApplicationContext());
-        FoodPlacesModel.getObjInstance().startLoadingGuides(getApplicationContext());
-        FoodPlacesModel.getObjInstance().startLoadingFeatured(getApplicationContext());
+        mFoodPlacesModel.startLoadingPromotions(getApplicationContext());
+        mFoodPlacesModel.startLoadingGuides(getApplicationContext());
+        mFoodPlacesModel.startLoadingFeatured(getApplicationContext());
     }
 
     private AppComponent initDagger() {
