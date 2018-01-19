@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -14,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -27,7 +25,6 @@ import projects.nyinyihtunlwin.foodplaces.adapters.PromotionAdapter;
 import projects.nyinyihtunlwin.foodplaces.components.EmptyViewPod;
 import projects.nyinyihtunlwin.foodplaces.components.SmartHorizontalScrollListener;
 import projects.nyinyihtunlwin.foodplaces.components.SmartRecyclerView;
-import projects.nyinyihtunlwin.foodplaces.data.model.FoodPlacesModel;
 import projects.nyinyihtunlwin.foodplaces.data.vo.FeaturedVO;
 import projects.nyinyihtunlwin.foodplaces.data.vo.GuidesVO;
 import projects.nyinyihtunlwin.foodplaces.data.vo.PromotionVO;
@@ -96,6 +93,7 @@ public class MainActivity
         handler = new Handler();
 
         mPresenter = new FoodPlacesPresenter();
+        mPresenter.onCreate(this);
 
         rvPromotions.setEmptyView(vpEmptyData);
         rvPromotions.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -112,13 +110,13 @@ public class MainActivity
         SmartHorizontalScrollListener scrollListenerPromotion = new SmartHorizontalScrollListener(new SmartHorizontalScrollListener.OnSmartHorizontalScrollListener() {
             @Override
             public void onListEndReached() {
-                FoodPlacesModel.getObjInstance().loadMorePromotions(getApplicationContext());
+                mPresenter.onPromotionListEndReach(getApplicationContext());
             }
         });
         SmartHorizontalScrollListener scrollListenerGuides = new SmartHorizontalScrollListener(new SmartHorizontalScrollListener.OnSmartHorizontalScrollListener() {
             @Override
             public void onListEndReached() {
-                FoodPlacesModel.getObjInstance().loadMoreGuides(getApplicationContext());
+                mPresenter.onGuidesListEndReach(getApplicationContext());
             }
         });
         rvPromotions.addOnScrollListener(scrollListenerPromotion);
@@ -136,7 +134,7 @@ public class MainActivity
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                FoodPlacesModel.getObjInstance().forceRefreshData(getApplicationContext());
+                mPresenter.onForceRefreshData(getApplicationContext());
             }
         });
 
@@ -168,6 +166,12 @@ public class MainActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mPresenter.onStart();
     }
 
     @Override
@@ -206,38 +210,15 @@ public class MainActivity
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()) {
             case PROMOTIONS_LOADER_ID:
-                if (data != null && data.moveToFirst()) {
-                    List<PromotionVO> promotionList = new ArrayList<>();
-                    do {
-                        PromotionVO promotionVO = PromotionVO.parseFromCursor(getApplicationContext(), data);
-                        promotionList.add(promotionVO);
-                    } while (data.moveToNext());
-                    mPromotionAdapter.appendNewData(promotionList);
-                }
+                mPresenter.onPromotionsLoaded(getApplicationContext(), data);
                 break;
             case GUIDES_LOADER_ID:
-                if (data != null && data.moveToFirst()) {
-                    List<GuidesVO> guideList = new ArrayList<>();
-                    do {
-                        GuidesVO guidesVO = GuidesVO.parseFromCursor(getApplicationContext(), data);
-                        guideList.add(guidesVO);
-                    } while (data.moveToNext());
-                    mGuidesAdapter.appendNewData(guideList);
-                }
+                mPresenter.onGuidesLoaded(getApplicationContext(), data);
                 break;
             case FEATURED_LOADER_ID:
-                if (data != null && data.moveToFirst()) {
-                    List<FeaturedVO> featuredList = new ArrayList<>();
-                    do {
-                        FeaturedVO featuredVO = FeaturedVO.parseFromCursor(getApplicationContext(), data);
-                        featuredList.add(featuredVO);
-                    } while (data.moveToNext());
-                    pagerAdapter.setFeatures(featuredList);
-                    circleIndicator.setViewPager(vpFoodPlaceImages);
-                }
+                mPresenter.onFeaturedLoaded(getApplicationContext(), data);
                 break;
         }
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -247,17 +228,21 @@ public class MainActivity
 
     @Override
     public void displayPromotions(List<PromotionVO> promotionList) {
-
+        mPromotionAdapter.appendNewData(promotionList);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void displayGuides(List<GuidesVO> guideList) {
-
+        mGuidesAdapter.appendNewData(guideList);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void displayFeatured(List<FeaturedVO> featuredList) {
-
+        pagerAdapter.setFeatures(featuredList);
+        circleIndicator.setViewPager(vpFoodPlaceImages);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
